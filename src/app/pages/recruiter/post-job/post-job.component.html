@@ -1,0 +1,267 @@
+<div class="min-h-screen bg-slate-50/50">
+  <!-- Page Header -->
+  <header class="bg-white border-b border-slate-200 px-6 py-8 mb-8 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+          <span class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+          </span>
+          Post a New Job
+        </h1>
+        <p class="text-slate-500 mt-1 text-lg font-medium">Find the perfect candidate for your team.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button type="button" (click)="onCancel()" class="px-4 py-2 text-sm font-bold text-slate-600 hover:text-rose-600 transition-colors">
+          Cancel & Exit
+        </button>
+        <button 
+          type="button" 
+          (click)="onSubmit()" 
+          [disabled]="isLoading || jobForm.invalid"
+          class="inline-flex items-center justify-center px-8 py-3 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-60 disabled:pointer-events-none"
+        >
+          <div *ngIf="isLoading" class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+          {{ isLoading ? 'Publishing...' : 'Publish Listing' }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto px-6 pb-32">
+    <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" class="space-y-12">
+      
+      <!-- Basic Information -->
+      <section class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-200 shadow-sm transition-all hover:shadow-md">
+        <div class="flex items-center gap-4 mb-10 border-b border-slate-100 pb-6">
+          <span class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-xl">01</span>
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Job Details</h2>
+            <p class="text-slate-500 font-medium">Essential information about the position.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Job Title -->
+          <div class="md:col-span-2 space-y-2">
+            <label for="title" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Job Title</label>
+            <input 
+              id="title"
+              formControlName="title"
+              type="text" 
+              placeholder="e.g. Senior Software Engineer (Remote)" 
+              class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm"
+            >
+            <p *ngIf="jobForm.get('title')?.touched && jobForm.get('title')?.invalid" class="text-xs font-bold text-rose-500 mt-1 ml-2">Job title must be at least 5 characters.</p>
+          </div>
+
+          <!-- Job Type -->
+          <div class="space-y-2">
+            <label for="type" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Employment Type</label>
+            <div class="relative">
+              <select 
+                id="type"
+                formControlName="type"
+                class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="FULL_TIME">Full-time</option>
+                <option value="PART_TIME">Part-time</option>
+                <option value="CONTRACT">Contract</option>
+                <option value="INTERNSHIP">Internship</option>
+                <option value="FREELANCE">Freelance</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Work Mode -->
+          <div class="space-y-2">
+            <label for="workMode" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Work Mode</label>
+            <div class="relative">
+              <select 
+                id="workMode"
+                formControlName="workMode"
+                class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm appearance-none cursor-pointer"
+              >
+                <option value="REMOTE">Remote</option>
+                <option value="HYBRID">Hybrid</option>
+                <option value="ONSITE">On-site</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="space-y-2">
+            <label for="location" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Location</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-indigo-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </div>
+              <input 
+                id="location"
+                formControlName="location"
+                type="text" 
+                placeholder="e.g. San Francisco, CA" 
+                class="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm"
+              >
+            </div>
+          </div>
+
+          <!-- Experience -->
+          <div class="space-y-2">
+            <label for="experience" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Experience Level</label>
+            <input 
+              id="experience"
+              formControlName="experience"
+              type="text" 
+              placeholder="e.g. 3-5 Years" 
+              class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm"
+            >
+          </div>
+
+          <!-- Salary -->
+          <div class="space-y-2">
+            <label for="salary" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Salary Range (Annual)</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-emerald-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <input 
+                id="salary"
+                formControlName="salary"
+                type="text" 
+                placeholder="e.g. ₹12,00,000 - ₹16,00,000" 
+                class="w-full pl-14 pr-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm"
+              >
+            </div>
+          </div>
+
+          <!-- Deadline -->
+          <div class="space-y-2">
+            <label for="deadline" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Application Deadline</label>
+            <input 
+              id="deadline"
+              formControlName="deadline"
+              type="date" 
+              class="w-full px-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm cursor-pointer"
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills & Tags -->
+      <section class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-200 shadow-sm transition-all hover:shadow-md">
+        <div class="flex items-center gap-4 mb-10 border-b border-slate-100 pb-6">
+          <span class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-black text-xl">02</span>
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Skills & Tech Stack</h2>
+            <p class="text-slate-500 font-medium">Keywords that help candidates find your job.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <label for="skills" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Required Skills</label>
+          <div class="relative group">
+            <div class="absolute top-5 left-5 pointer-events-none text-slate-300 group-focus-within:text-amber-500 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+              </svg>
+            </div>
+            <textarea 
+              id="skills"
+              formControlName="skills"
+              rows="3" 
+              placeholder="e.g. Java, Spring Boot, React, AWS, Docker (Separated by commas)" 
+              class="w-full pl-16 pr-6 py-5 bg-slate-50 border-2 border-slate-100 rounded-3xl text-slate-900 font-bold placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-500 focus:bg-white transition-all shadow-sm resize-none"
+            ></textarea>
+          </div>
+          <p class="text-xs font-bold text-slate-400 ml-2 uppercase tracking-tight">Pro-tip: Separate each skill with a comma for better indexing.</p>
+        </div>
+      </section>
+
+      <!-- Description & Requirements -->
+      <section class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-200 shadow-sm transition-all hover:shadow-md">
+        <div class="flex items-center gap-4 mb-10 border-b border-slate-100 pb-6">
+          <span class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-xl">03</span>
+          <div>
+            <h2 class="text-2xl font-black text-slate-900">Content & Expectations</h2>
+            <p class="text-slate-500 font-medium">Describe the role and what you're looking for.</p>
+          </div>
+        </div>
+
+        <div class="space-y-10">
+          <!-- Job Description -->
+          <div class="space-y-4">
+            <label for="description" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Role Description</label>
+            <textarea 
+              id="description"
+              formControlName="description"
+              rows="12" 
+              placeholder="Tell candidates about the role, responsibilities, team culture, and impact..." 
+              class="w-full px-8 py-6 bg-slate-50 border-2 border-slate-100 rounded-3xl text-slate-900 font-medium leading-relaxed placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm resize-none"
+            ></textarea>
+            <div class="flex justify-between items-center px-2">
+              <p *ngIf="jobForm.get('description')?.touched && jobForm.get('description')?.invalid" class="text-xs font-bold text-rose-500">Min 50 characters required.</p>
+              <span class="text-xs font-black text-slate-400 uppercase tracking-widest ml-auto">{{ jobForm.get('description')?.value?.length || 0 }} characters</span>
+            </div>
+          </div>
+
+          <!-- Requirements -->
+          <div class="space-y-4">
+            <label for="requirements" class="text-sm font-black text-slate-700 uppercase tracking-widest ml-1">Key Requirements</label>
+            <textarea 
+              id="requirements"
+              formControlName="requirements"
+              rows="8" 
+              placeholder="List specific qualifications, years of experience, and essential skills..." 
+              class="w-full px-8 py-6 bg-slate-50 border-2 border-slate-100 rounded-3xl text-slate-900 font-medium leading-relaxed placeholder:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-50 focus:border-indigo-600 focus:bg-white transition-all shadow-sm resize-none"
+            ></textarea>
+            <div class="flex justify-between items-center px-2">
+              <p *ngIf="jobForm.get('requirements')?.touched && jobForm.get('requirements')?.invalid" class="text-xs font-bold text-rose-500">Requirements are mandatory.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit Footer -->
+      <div class="bg-indigo-900 rounded-[3rem] p-10 md:p-16 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden group">
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="max-w-md text-center md:text-left">
+            <h3 class="text-3xl font-black mb-4">Ready to find your next hire?</h3>
+            <p class="text-indigo-100 text-lg font-medium">By clicking publish, your job listing will be immediately visible to thousands of eager candidates on HireConnect.</p>
+          </div>
+          <button 
+            type="submit" 
+            [disabled]="isLoading || jobForm.invalid"
+            class="group/btn relative inline-flex items-center justify-center px-12 py-5 bg-white text-indigo-900 font-black text-xl rounded-2xl shadow-2xl hover:bg-indigo-50 hover:-translate-y-1 active:translate-y-0 transition-all disabled:opacity-50 disabled:pointer-events-none"
+          >
+            <div *ngIf="isLoading" class="mr-3 h-6 w-6 animate-spin rounded-full border-2 border-indigo-900 border-t-transparent"></div>
+            {{ isLoading ? 'Publishing...' : 'Publish Now' }}
+            <svg class="w-6 h-6 ml-2 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

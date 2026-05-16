@@ -1,0 +1,29 @@
+/* Custom styles for Post Job Page */
+:host {
+  display: block;
+}
+
+/* For custom scrollbar in textareas */
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Remove default date picker icon background on some browsers */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 5px;
+  filter: invert(0.5);
+}
