@@ -1,0 +1,142 @@
+<div class="dashboard-container">
+  <!-- Header Section -->
+  <header class="dashboard-header">
+    <div class="header-info">
+      <h1 class="welcome-text">Welcome back, {{ getCurrentUserName() }}! 🎯</h1>
+      <p class="subtitle text-secondary">Here's what's happening with your recruitment today.</p>
+    </div>
+    <div class="header-actions">
+      <button mat-flat-button color="primary" class="btn-premium" routerLink="/recruiter/post-job">
+        <mat-icon>add</mat-icon>
+        Post a New Job
+      </button>
+    </div>
+  </header>
+
+  <!-- Metrics Grid -->
+  <section class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon bg-primary-light">
+        <mat-icon color="primary">work</mat-icon>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ jobs.length }}</h3>
+        <p class="metric-label">Active Jobs</p>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon bg-success-light">
+        <mat-icon color="accent">people</mat-icon>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ totalApplications }}</h3>
+        <p class="metric-label">Total Applicants</p>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon bg-warning-light">
+        <mat-icon style="color: #f59e0b">star</mat-icon>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ shortlistedCount }}</h3>
+        <p class="metric-label">Shortlisted</p>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon bg-info-light">
+        <mat-icon color="primary">workspace_premium</mat-icon>
+      </div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ hiredCount }}</h3>
+        <p class="metric-label">Hired Candidates</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="dashboard-content-grid">
+    <!-- Recent Applications -->
+    <div class="content-section">
+      <div class="section-header">
+        <h2 class="section-title">Recent Applications</h2>
+        <button mat-button color="primary" routerLink="/recruiter/applicants">View All</button>
+      </div>
+      
+      <mat-card class="premium-card">
+        <div class="applications-list" *ngIf="!isLoading && recentApplications.length > 0">
+          <div class="application-row" *ngFor="let app of recentApplications | slice:0:5">
+            <div class="candidate-avatar">
+              {{ app.candidateName?.charAt(0) || 'C' }}
+            </div>
+            <div class="application-info">
+              <h4 class="candidate-name">{{ app.candidateName || 'Candidate #' + app.candidateId }}</h4>
+              <p class="job-title">{{ app.jobTitle }}</p>
+            </div>
+            <div class="application-status">
+              <span class="status-badge" [ngClass]="app.status.toLowerCase()">
+                {{ app.status }}
+              </span>
+            </div>
+            <div class="application-time">
+              {{ app.appliedAt | date:'shortDate' }}
+            </div>
+            <div class="application-actions">
+              <button mat-icon-button [routerLink]="['/recruiter/applicants']" [queryParams]="{id: app.id}">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!isLoading && recentApplications.length === 0">
+          <mat-icon class="empty-icon">person_search</mat-icon>
+          <h3>No applications yet</h3>
+          <p>Applications for your posted jobs will appear here.</p>
+        </div>
+
+        <div class="loading-state" *ngIf="isLoading">
+          <mat-spinner diameter="40"></mat-spinner>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Active Jobs Summary -->
+    <div class="content-section">
+      <div class="section-header">
+        <h2 class="section-title">Active Jobs Summary</h2>
+        <button mat-button color="primary" routerLink="/recruiter/my-jobs">Manage Jobs</button>
+      </div>
+      
+      <mat-card class="premium-card">
+        <div class="jobs-summary-list" *ngIf="!isLoading && jobs.length > 0">
+          <div class="job-summary-row" *ngFor="let job of jobs | slice:0:4">
+            <div class="job-info">
+              <h4 class="job-name">{{ job.title }}</h4>
+              <p class="job-meta">{{ job.location }} • {{ job.type }}</p>
+            </div>
+            <div class="job-stats">
+              <div class="stat-item">
+                <span class="stat-count">{{ job.applicantCount || 0 }}</span>
+                <span class="stat-name">Apps</span>
+              </div>
+            </div>
+            <div class="job-actions">
+              <button mat-icon-button [routerLink]="['/recruiter/post-job']" [queryParams]="{edit: job.id}">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!isLoading && jobs.length === 0">
+          <mat-icon class="empty-icon">post_add</mat-icon>
+          <h3>No active jobs</h3>
+          <p>Start by posting your first job opening.</p>
+          <button mat-stroked-button color="primary" routerLink="/recruiter/post-job" class="mt-4">Post Job</button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

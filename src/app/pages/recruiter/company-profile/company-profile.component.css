@@ -1,0 +1,27 @@
+/* Custom styles for Company Profile */
+:host {
+  display: block;
+}
+
+/* For custom scrollbar in textareas */
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Fix for Safari input rounded corners */
+input, textarea {
+  border-radius: 1rem;
+}

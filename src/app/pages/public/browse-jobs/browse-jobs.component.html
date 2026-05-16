@@ -1,0 +1,278 @@
+<div class="browse-jobs-container">
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="container mx-auto px-4 py-16 md:py-24">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-16">
+        <div class="hero-content text-center lg:text-left max-w-2xl animate-fade-in">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8">
+            <mat-icon class="text-indigo-300 scale-75">star</mat-icon>
+            <span class="text-xs font-bold text-white uppercase tracking-widest">Next-Gen Job Discovery</span>
+          </div>
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-8">
+            Level up your <span class="text-indigo-300">Career</span>
+          </h1>
+          <p class="text-xl text-indigo-100/80 mb-0 leading-relaxed font-medium">
+            Explore thousands of open positions from industry leaders. Your journey to excellence starts here.
+          </p>
+        </div>
+
+        <div class="hero-stats hidden lg:grid grid-cols-1 gap-4 w-64 animate-fade-in delay-200">
+          <div class="stat-card p-6 rounded-2xl">
+            <div class="text-3xl font-black text-white mb-1">{{ totalJobs.toLocaleString() }}+</div>
+            <div class="text-indigo-100/60 text-xs font-bold uppercase tracking-widest">Active Listings</div>
+          </div>
+          <div class="stat-card p-6 rounded-2xl">
+            <div class="text-3xl font-black text-white mb-1">{{ filteredJobs.length }}</div>
+            <div class="text-indigo-100/60 text-xs font-bold uppercase tracking-widest">Matching Jobs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 -mt-16 relative z-10 pb-24">
+    <!-- Search Bar -->
+    <mat-card class="search-card overflow-hidden">
+      <mat-card-content class="p-6 md:p-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">What are you looking for?</label>
+            <mat-form-field appearance="outline" class="w-full no-subscript">
+              <mat-icon matPrefix class="text-slate-400 scale-75">search</mat-icon>
+              <input matInput placeholder="Title, keyword, or company" [(ngModel)]="searchQuery" (keyup.enter)="searchJobs()">
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Where?</label>
+            <mat-form-field appearance="outline" class="w-full no-subscript">
+              <mat-icon matPrefix class="text-slate-400 scale-75">location_on</mat-icon>
+              <mat-select [(ngModel)]="selectedLocation" placeholder="All Locations">
+                <mat-option value="">🌍 Global / Remote</mat-option>
+                <mat-option *ngFor="let location of locations" [value]="location">{{ location }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Engagement</label>
+            <mat-form-field appearance="outline" class="w-full no-subscript">
+              <mat-icon matPrefix class="text-slate-400 scale-75">work_outline</mat-icon>
+              <mat-select [(ngModel)]="selectedJobType" placeholder="Any Type">
+                <mat-option value="">Full & Part Time</mat-option>
+                <mat-option *ngFor="let type of jobTypes" [value]="type">{{ type.replace('_', ' ') | titlecase }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button class="btn-primary h-[52px] w-full" (click)="searchJobs()">
+            <mat-icon class="mr-1">search</mat-icon> Search Jobs
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="flex flex-col lg:flex-row gap-12 mt-20">
+      <!-- Sidebar Filters -->
+      <aside class="w-full lg:w-72 flex-shrink-0">
+        <div class="sticky top-24 space-y-8">
+          <div class="flex items-center justify-between px-2">
+            <h2 class="text-lg font-black text-slate-900 tracking-tight">Refine Results</h2>
+            <button mat-button class="text-indigo-600 font-bold text-xs uppercase p-0" (click)="clearFilters()">Reset</button>
+          </div>
+          
+          <div class="space-y-10">
+            <!-- Skills -->
+            <section>
+              <h3 class="filter-group-title">Industry Skills</h3>
+              <div class="flex flex-wrap gap-2">
+                <button *ngFor="let skill of popularSkills" 
+                        class="chip-btn"
+                        [class.active]="selectedSkills.includes(skill)"
+                        (click)="toggleSkill(skill)">
+                  {{ skill }}
+                </button>
+              </div>
+            </section>
+
+            <!-- Work Mode -->
+            <section>
+              <h3 class="filter-group-title">Work Environment</h3>
+              <div class="space-y-2">
+                <button class="mode-btn" [class.active]="selectedRemote === 'remote'" (click)="selectedRemote = selectedRemote === 'remote' ? '' : 'remote'; filterJobs()">
+                  <mat-icon class="scale-75">home_work</mat-icon>
+                  <span>Remote First</span>
+                </button>
+                <button class="mode-btn" [class.active]="selectedRemote === 'hybrid'" (click)="selectedRemote = selectedRemote === 'hybrid' ? '' : 'hybrid'; filterJobs()">
+                  <mat-icon class="scale-75">business</mat-icon>
+                  <span>Hybrid Schedule</span>
+                </button>
+                <button class="mode-btn" [class.active]="selectedRemote === 'onsite'" (click)="selectedRemote = selectedRemote === 'onsite' ? '' : 'onsite'; filterJobs()">
+                  <mat-icon class="scale-75">apartment</mat-icon>
+                  <span>On-site Office</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- Experience -->
+            <section>
+              <h3 class="filter-group-title">Career Level</h3>
+              <mat-form-field appearance="outline" class="w-full no-subscript">
+                <mat-select [(ngModel)]="selectedExperience" (selectionChange)="filterJobs()" placeholder="Any Experience">
+                  <mat-option value="">All Career Stages</mat-option>
+                  <mat-option *ngFor="let level of experienceLevels" [value]="level">{{ level }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </section>
+
+            <!-- Alert Card -->
+            <div class="p-6 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-200 relative overflow-hidden group">
+              <div class="relative z-10">
+                <h4 class="font-black mb-2 flex items-center gap-2">
+                  <mat-icon class="scale-75">notifications_active</mat-icon>
+                  Stay Updated
+                </h4>
+                <p class="text-indigo-100 text-xs font-medium mb-6 leading-relaxed">
+                  Be the first to see new matches for your profile.
+                </p>
+                <button mat-raised-button 
+                        class="w-full !rounded-xl !bg-white !text-indigo-600 !font-black !text-xs !py-1 transition-all group-hover:scale-105"
+                        (click)="toggleAlerts()"
+                        [disabled]="isAlertsLoading">
+                  {{ alertsEnabled ? 'ALERTS ACTIVE' : 'ENABLE ALERTS' }}
+                </button>
+              </div>
+              <div class="absolute -right-4 -bottom-4 text-white/10 rotate-12 transition-transform group-hover:scale-125">
+                <mat-icon style="font-size: 80px; width: 80px; height: 80px;">notifications</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+          <div>
+            <h2 class="text-3xl font-black text-slate-900 tracking-tight">{{ filteredJobs.length }} Opportunities</h2>
+            <p class="text-slate-500 font-bold text-sm">Curation of the best roles in tech</p>
+          </div>
+          
+          <mat-form-field appearance="outline" class="w-full sm:w-56 sort-dropdown no-subscript">
+            <mat-icon matPrefix class="scale-75 text-slate-400">sort</mat-icon>
+            <mat-select [(ngModel)]="sortBy" (selectionChange)="filterJobs()">
+              <mat-option value="relevance">Sort: Relevance</mat-option>
+              <mat-option value="date">Sort: Newest First</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Job Grid -->
+        <div class="space-y-6" *ngIf="!isLoading">
+          <mat-card class="job-card-premium group border-none" *ngFor="let job of paginatedJobs">
+            <mat-card-content class="p-0">
+              <div class="p-8 flex flex-col md:flex-row gap-8">
+                <div class="company-logo-wrapper">
+                  <img [src]="job.companyLogo || 'assets/images/default-company.png'" [alt]="job.company" class="w-full h-full object-contain">
+                </div>
+                
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4 mb-4">
+                    <div class="space-y-1">
+                      <h3 class="job-title cursor-pointer" (click)="viewJobDetails(job)">
+                        {{ job.title }}
+                      </h3>
+                      <p class="text-indigo-600 font-bold text-sm tracking-wide">{{ job.company }}</p>
+                    </div>
+                    <div class="flex items-center gap-3" *ngIf="job.salaryMin">
+                      <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-black border border-emerald-100">
+                        {{ job.salaryMin | currency:'INR':'symbol':'1.0-0' }} - {{ job.salaryMax | currency:'INR':'symbol':'1.0-0' }}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div class="flex flex-wrap items-center gap-y-3 gap-x-6 mb-6">
+                    <div class="meta-item">
+                      <mat-icon>location_on</mat-icon> <span>{{ job.location }}</span>
+                    </div>
+                    <div class="meta-item">
+                      <mat-icon>work</mat-icon> <span>{{ job.type.replace('_', ' ') | titlecase }}</span>
+                    </div>
+                    <div class="meta-item">
+                      <mat-icon>history</mat-icon> <span>{{ formatPostedTime(job.createdAt) }}</span>
+                    </div>
+                  </div>
+
+                  <p class="text-slate-600 text-sm line-clamp-2 mb-8 leading-relaxed font-medium">
+                    {{ job.description }}
+                  </p>
+
+                  <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="flex flex-wrap gap-2">
+                      <span *ngFor="let skill of job.skills | slice:0:4" class="skill-tag">
+                        {{ skill }}
+                      </span>
+                      <span *ngIf="job.skills && job.skills.length > 4" class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center ml-2">
+                        +{{ job.skills.length - 4 }} More
+                      </span>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                      <button mat-button class="btn-outline h-11 px-6 flex-1 sm:flex-none" (click)="viewJobDetails(job)">
+                        Details
+                      </button>
+                      <button mat-raised-button class="btn-primary h-11 px-8 flex-1 sm:flex-none" [disabled]="job.applied" (click)="applyForJob(job)">
+                        {{ job.applied ? 'Applied' : 'Apply Now' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Loading State Skeleton -->
+        <div class="space-y-6" *ngIf="isLoading">
+          <mat-card class="job-card-premium opacity-50 border-none shadow-none bg-slate-100" *ngFor="let i of [1,2,3]">
+            <mat-card-content class="p-8">
+              <div class="flex animate-pulse gap-8">
+                <div class="w-16 h-16 bg-slate-200 rounded-2xl"></div>
+                <div class="flex-1 space-y-4">
+                  <div class="h-6 bg-slate-200 rounded w-1/3"></div>
+                  <div class="h-4 bg-slate-200 rounded w-1/4"></div>
+                  <div class="h-20 bg-slate-200 rounded w-full"></div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state-card animate-fade-in" *ngIf="!isLoading && filteredJobs.length === 0">
+          <div class="empty-state-icon">
+            <mat-icon style="font-size: 40px; width: 40px; height: 40px;">search_off</mat-icon>
+          </div>
+          <h3 class="text-3xl font-black text-slate-900 mb-2">No matching opportunities</h3>
+          <p class="text-slate-500 font-medium max-w-sm mx-auto mb-10">We couldn't find any jobs matching your current filters. Try broadening your search terms.</p>
+          <button mat-raised-button class="btn-primary h-12" (click)='clearFilters()'>
+            <mat-icon class="mr-1">refresh</mat-icon> Reset All Filters
+          </button>
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-16 flex justify-center" *ngIf="filteredJobs.length > pageSize">
+          <mat-card class="rounded-2xl border-none shadow-lg overflow-hidden">
+            <mat-paginator [length]="filteredJobs.length"
+                           [pageSize]="pageSize"
+                           [pageSizeOptions]="[5, 10, 20, 50]"
+                           (page)="onPageChange($event)"
+                           class="bg-white">
+            </mat-paginator>
+          </mat-card>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
